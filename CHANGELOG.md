@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-06-12
+
+### Added
+
+- `git gtr clean --closed` to remove worktrees whose PRs/MRs were closed without merging; combine with `--merged` to match either state, and `--to <ref>` now filters both modes by target base ref ([#183](https://github.com/coderabbitai/git-worktree-runner/pull/183))
+
+### Fixed
+
+- `git gtr clean` now detects registry entries that are locked but whose directories no longer exist and offers to unlock and prune them ([#182](https://github.com/coderabbitai/git-worktree-runner/pull/182))
+- GitLab MR branch-tip matching now validates head SHAs structurally instead of substring matching, preventing false matches on unrelated JSON fields ([#183](https://github.com/coderabbitai/git-worktree-runner/pull/183))
+
 ## [2.7.3] - 2026-05-05
 
 ### Fixed
@@ -223,7 +234,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Improved base directory resolution logic to distinguish `.` (repo root), `./path` (repo-internal) from other relative values (sibling directories)
 
-[Unreleased]: https://github.com/coderabbitai/git-worktree-runner/compare/v2.7.3...HEAD
+[Unreleased]: https://github.com/coderabbitai/git-worktree-runner/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/coderabbitai/git-worktree-runner/compare/v2.7.3...v2.8.0
 [2.7.3]: https://github.com/coderabbitai/git-worktree-runner/compare/v2.7.2...v2.7.3
 [2.7.2]: https://github.com/coderabbitai/git-worktree-runner/compare/v2.7.1...v2.7.2
 [2.7.1]: https://github.com/coderabbitai/git-worktree-runner/compare/v2.7.0...v2.7.1
