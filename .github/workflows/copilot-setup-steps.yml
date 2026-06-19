@@ -22,3 +22,7 @@ jobs:
 
       - name: Install ShellCheck and BATS
         run: sudo apt-get update && sudo apt-get install -y shellcheck bats
+
+concurrency:
+  queue: 
+  
