@@ -2,6 +2,7 @@
 # git-gtr - Git worktree runner
 # Portable, cross-platform git worktree management
 # Invoked as: git gtr <command> (git subcommand via PATH discovery)
+# shellcheck disable=SC1091
 
 set -e
 
