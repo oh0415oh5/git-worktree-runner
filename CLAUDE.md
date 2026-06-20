@@ -195,3 +195,11 @@ echo "Debug: var=$var" >&2           # Inspect variable
 - `.github/instructions/*.instructions.md` — File-pattern-specific guidance (testing, shell conventions, lib modifications, adapter contracts, completions)
 - `docs/configuration.md` — Complete configuration reference
 - `docs/advanced-usage.md` — Advanced workflows
+
+## Cursor Cloud specific instructions
+
+This is a pure-Bash CLI; there is no build step or package manager. Dev tooling is just `bats` (tests) and `shellcheck` (lint), installed via `apt` (the startup update script handles this). Standard commands are documented above and in CI (`.github/workflows/lint.yml`): `bats tests/`, the ShellCheck invocation, and `./scripts/generate-completions.sh --check`.
+
+- **Commit signing hangs the tests (most important gotcha).** The cloud git environment ships with ssh commit signing enabled (`commit.gpgsign=true`), and the signing helper blocks indefinitely in this sandbox. The BATS integration tests create disposable repos and run `git commit`, so `bats tests/` will hang silently (no output, since CI pipes through `tail`) until signing is disabled. Before running tests, run: `git config --global commit.gpgsign false`. This config is environment-injected per VM, so re-apply it each session if a fresh VM brings signing back.
+- **Run/test as `./bin/gtr`** (dev wrapper) — never install globally. There is no server/daemon to start; commands are one-shot.
+- **End-to-end smoke test** in a disposable repo without a remote must use a local base, e.g. `./bin/gtr new <branch> --from-current --no-fetch`. The default base is `origin/<default-branch>`, which fails when there is no `origin` remote.
