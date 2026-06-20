@@ -81,3 +81,17 @@ Update `GTR_VERSION` (line 8 `bin/gtr`) when releasing; affects `gtr version` / 
 - **`CLAUDE.md`** - Extended development guide for Claude Code
 
 Feedback: Ask if more detail needed on copy patterns, hooks, or multi-worktree `--force` safety.
+
+## GitHub Copilot Cloud specific instructions
+
+This is a pure-Bash CLI with no build step. Dev tooling is `shellcheck` (lint) and `bats` (tests), pre-installed by `.github/workflows/copilot-setup-steps.yml`. Standard CI commands:
+
+```bash
+shellcheck bin/gtr bin/git-gtr lib/*.sh lib/commands/*.sh adapters/editor/*.sh adapters/ai/*.sh
+./scripts/generate-completions.sh --check
+bats tests/
+```
+
+- **Commit signing is disabled in the setup steps.** The cloud environment enables ssh commit signing (`commit.gpgsign=true`) by default. The signing helper blocks indefinitely in the sandbox, causing `bats tests/` to hang silently because the integration tests run `git commit` in disposable repos. The `copilot-setup-steps.yml` disables this globally; if tests still hang, run `git config --global commit.gpgsign false` manually.
+- **Run as `./bin/gtr`** (dev wrapper) — never install globally. There is no server or daemon; commands are one-shot.
+- **End-to-end smoke tests** in a disposable repo without a remote must use a local base: `./bin/gtr new <branch> --from-current --no-fetch`. The default base is `origin/<default-branch>`, which fails when there is no `origin` remote.
