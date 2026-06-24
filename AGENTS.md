@@ -188,6 +188,25 @@ echo "Debug: var=$var" >&2           # Inspect variable
 ./bin/gtr adapter                    # List available adapters
 ```
 
+## Cursor Cloud specific instructions
+
+The Cursor Cloud environment sets `commit.gpgsign=true` globally (SSH key signing via Cursor's agent). The signing agent can expire mid-run after many commits, causing later `git commit` calls to fail with `fatal: failed to write commit object` / `error: Couldn't find key in agent?`.
+
+**Dev tooling**: `bats` (tests) and `shellcheck` (lint) are pre-installed. No additional setup is required.
+
+**Running tests**: Run `bats tests/` to execute all 28 test files (~497 tests). This is the same command CI uses. Individual files: `bats tests/<file>.bats`. `setup_integration_repo()` in `tests/test_helper.bash` already disables signing in every disposable test repo via `git -C "$TEST_REPO" config commit.gpgsign false`.
+
+**End-to-end smoke test** in a disposable repo without a remote must use a local base, since there is no `origin` to push to or fetch from:
+
+```bash
+mkdir -p /tmp/gtr-test && cd /tmp/gtr-test && git init && git config commit.gpgsign false && git commit --allow-empty -m "init"
+/workspace/bin/gtr new test-feature --from-current --no-fetch
+/workspace/bin/gtr list
+/workspace/bin/gtr rm test-feature
+```
+
+**Lint**: `shellcheck bin/gtr bin/git-gtr lib/*.sh lib/commands/*.sh adapters/editor/*.sh adapters/ai/*.sh`
+
 ## Related Documentation
 
 - `CONTRIBUTING.md` — Full contribution guidelines, coding standards, manual testing checklist

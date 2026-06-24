@@ -28,6 +28,7 @@ setup_integration_repo() {
   git -C "$TEST_REPO" init --quiet
   git -C "$TEST_REPO" config user.name "Test User"
   git -C "$TEST_REPO" config user.email "test@example.com"
+  git -C "$TEST_REPO" config commit.gpgsign false
   git -C "$TEST_REPO" commit --allow-empty -m "init" --quiet
   export GTR_DIR="$PROJECT_ROOT"
   cd "$TEST_REPO" || return 1
